@@ -26,11 +26,11 @@ class Account(AbstractBaseUser, PermissionsMixin):
     )
 
     first_name = models.CharField(
-        max_length=150,
+        max_length=255,
     )
 
     last_name = models.CharField(
-        max_length=150,
+        max_length=255,
     )
 
     phone_number = models.CharField(
@@ -47,10 +47,12 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     is_verified = models.BooleanField(
         default=False,
+        db_index=True,
     )
 
     is_active = models.BooleanField(
         default=True,
+        db_index=True,
     )
 
     is_staff = models.BooleanField(
@@ -71,9 +73,12 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     REQUIRED_FIELDS = []
 
-    def __str__(self):
-        return self.email
+    class Meta:
+        ordering = ["-date_joined"]
 
     @property
     def full_name(self):
         return f"{self.first_name} {self.last_name}".strip()
+
+    def __str__(self):
+        return self.email
