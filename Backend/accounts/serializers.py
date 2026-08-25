@@ -1,34 +1,32 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import (
-    TokenObtainPairSerializer,
-)
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from .services import AccountService
+
 
 Account = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-
     password = serializers.CharField(
         write_only=True,
         required=True,
         min_length=8,
-        style={
-            "input_type": "password",
-        },
+        validators=[validate_password],
+        style={"input_type": "password"},
     )
 
     password2 = serializers.CharField(
         write_only=True,
         required=True,
-        style={
-            "input_type": "password",
-        },
+        style={"input_type": "password"},
     )
 
     class Meta:
         model = Account
-
         fields = [
             "email",
             "password",
@@ -42,9 +40,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_email(self, value):
         value = value.strip().lower()
 
-        if Account.objects.filter(
-            email__iexact=value
-        ).exists():
+        if Account.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError(
                 "An account with this email already exists."
             )
@@ -54,7 +50,7 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_role(self, value):
         if value == Account.Role.ADMIN:
             raise serializers.ValidationError(
-                "Admin accounts cannot be created through registration."
+                "Admin account cannot be created through registration."
             )
 
         return value
@@ -82,18 +78,18 @@ class RegisterSerializer(serializers.ModelSerializer):
             **validated_data,
         )
 
+        AccountService.send_verification_email(account)
+
         return account
 
 
 class AccountSerializer(serializers.ModelSerializer):
-
     full_name = serializers.CharField(
         read_only=True,
     )
 
     class Meta:
         model = Account
-
         fields = [
             "id",
             "email",
@@ -120,62 +116,50 @@ class AccountSerializer(serializers.ModelSerializer):
         ]
 
 
-class LoginSerializer(TokenObtainPairSerializer):
-
-    username_field = Account.USERNAME_FIELD
-
-    def validate(self, attrs):
-        data = super().validate(attrs)
-
-        data["user"] = AccountSerializer(
-            self.user
-        ).data
-
-        return data
+class UpdateAccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = [
+            "first_name",
+            "last_name",
+            "phone_number",
+        ]
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-
     old_password = serializers.CharField(
         write_only=True,
         required=True,
-        style={
-            "input_type": "password",
-        },
+        style={"input_type": "password"},
     )
 
     new_password = serializers.CharField(
         write_only=True,
         required=True,
         min_length=8,
-        style={
-            "input_type": "password",
-        },
+        validators=[validate_password],
+        style={"input_type": "password"},
     )
 
     new_password2 = serializers.CharField(
         write_only=True,
         required=True,
-        style={
-            "input_type": "password",
-        },
+        style={"input_type": "password"},
     )
 
     def validate(self, attrs):
-        if (
-            attrs["new_password"]
-            != attrs["new_password2"]
-        ):
+        old_password = attrs.get("old_password")
+        new_password = attrs.get("new_password")
+        new_password2 = attrs.get("new_password2")
+
+        if new_password != new_password2:
             raise serializers.ValidationError(
                 {
                     "new_password2": "Passwords do not match."
                 }
             )
 
-        if (
-            attrs["old_password"]
-            == attrs["new_password"]
-        ):
+        if old_password == new_password:
             raise serializers.ValidationError(
                 {
                     "new_password": (
@@ -188,9 +172,100 @@ class ChangePasswordSerializer(serializers.Serializer):
         return attrs
 
 
-class LogoutSerializer(serializers.Serializer):
+class LoginSerializer(TokenObtainPairSerializer):
 
-    refresh = serializers.CharField(
+    username_field = Account.USERNAME_FIELD
+
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token["email"] = user.email
+        token["role"] = user.role
+
+        return token
+
+    def validate(self, attrs):
+
+        data = super().validate(attrs)
+
+        if not self.user.is_verified:
+            raise serializers.ValidationError(
+                {
+                    "detail": (
+                        "Please verify your email address "
+                        "before logging in."
+                    )
+                }
+            )
+
+        data["user"] = AccountSerializer(
+            self.user
+        ).data
+
+        return data
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    token = serializers.CharField(
         required=True,
         write_only=True,
     )
+
+
+class ResendVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True,
+    )
+
+    def validate_email(self, value):
+        return value.strip().lower()
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField(
+        required=True,
+    )
+
+    def validate_email(self, value):
+        return value.strip().lower()
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+
+    user_id = serializers.UUIDField(
+        required=True,
+        write_only=True,
+    )
+
+    token = serializers.CharField(
+        required=True,
+        write_only=True,
+    )
+
+    new_password = serializers.CharField(
+        write_only=True,
+        required=True,
+        min_length=8,
+        validators=[validate_password],
+        style={"input_type": "password"},
+    )
+
+    new_password2 = serializers.CharField(
+        write_only=True,
+        required=True,
+        style={"input_type": "password"},
+    )
+
+    def validate(self, attrs):
+
+        if attrs["new_password"] != attrs["new_password2"]:
+            raise serializers.ValidationError(
+                {
+                    "new_password2": "Passwords do not match."
+                }
+            )
+
+        return attrs
+
+
