@@ -1,87 +1,53 @@
 from rest_framework.permissions import BasePermission
 
-
-class IsActiveAccount(BasePermission):
-    message = "Active account authentication is required."
-
-    def has_permission(self, request, view):
-        user = request.user
-
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-        )
-
-
-class IsAdmin(BasePermission):
-    message = "Admin access is required."
-
-    def has_permission(self, request, view):
-        user = request.user
-
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-            and user.role == user.Role.ADMIN
-        )
+from .models import Account
 
 
 class IsCustomer(BasePermission):
-    message = "Customer access is required."
-
     def has_permission(self, request, view):
-        user = request.user
-
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-            and user.role == user.Role.CUSTOMER
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == Account.Role.CUSTOMER
         )
 
 
 class IsProvider(BasePermission):
-    message = "Provider access is required."
-
     def has_permission(self, request, view):
-        user = request.user
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == Account.Role.PROVIDER
+        )
 
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-            and user.role == user.Role.PROVIDER
+
+class IsVerifiedProvider(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == Account.Role.PROVIDER
+            and hasattr(request.user, "provider_profile")
+            and request.user.provider_profile.is_verified
+        )
+
+
+class IsAdmin(BasePermission):
+    def has_permission(self, request, view):
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role == Account.Role.ADMIN
         )
 
 
 class IsCustomerOrProvider(BasePermission):
-    message = "Customer or provider access is required."
-
     def has_permission(self, request, view):
-        user = request.user
-
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-            and user.role in (
-                user.Role.CUSTOMER,
-                user.Role.PROVIDER,
-            )
-        )
-
-
-class IsAccountOwner(BasePermission):
-    message = "You can only access your own account."
-
-    def has_object_permission(self, request, view, obj):
-        user = request.user
-
-        return bool(
-            user
-            and user.is_authenticated
-            and user.is_active
-            and obj == user
+        return (
+            request.user
+            and request.user.is_authenticated
+            and request.user.role in [
+                Account.Role.CUSTOMER,
+                Account.Role.PROVIDER,
+            ]
         )
