@@ -25,6 +25,7 @@ class Booking(models.Model):
     )
 
     booking_date = models.DateField()
+    booking_time = models.TimeField(null=True, blank=True)
     notes = models.TextField(blank=True)
 
     status = models.CharField(
