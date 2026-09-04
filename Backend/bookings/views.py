@@ -4,6 +4,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 
+from providers.models import Availability
+from rest_framework.exceptions import ValidationError
+from notifications.services import create_notification
+
 from .models import Booking
 from .serializers import BookingSerializer
 
@@ -40,7 +44,44 @@ class BookingListCreateView(generics.ListCreateAPIView):
                 "Only customers can create bookings."
             )
 
-        serializer.save(customer=self.request.user)
+        service = serializer.validated_data["service"]
+        booking_date = serializer.validated_data["booking_date"]
+        booking_time = serializer.validated_data.get("booking_time")
+
+        provider = service.provider
+        weekday = booking_date.weekday()
+
+        day_slots = Availability.objects.filter(
+            provider=provider, weekday=weekday
+        )
+
+        if not day_slots.exists():
+            raise ValidationError(
+                "This provider is not available on the selected day."
+            )
+
+        if booking_time is not None:
+            matching_slot = day_slots.filter(
+                start_time__lte=booking_time,
+                end_time__gte=booking_time,
+            )
+
+            if not matching_slot.exists():
+                raise ValidationError(
+                    "This provider is not available at the selected time."
+                )
+
+        booking = serializer.save(customer=self.request.user)
+
+        create_notification(
+            recipient=provider,
+            notification_type="BOOKING",
+            title="New booking request",
+            message=(
+                f"{self.request.user.username} requested "
+                f"{service.title} on {booking.booking_date}."
+            ),
+        )
 
 
 class BookingDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -102,6 +143,7 @@ class BookingDetailView(generics.RetrieveUpdateDestroyAPIView):
             "Providers cannot delete bookings."
         )
 
+
 class BookingStatusUpdateView(generics.UpdateAPIView):
     serializer_class = BookingSerializer
     permission_classes = [IsAuthenticated]
@@ -145,10 +187,25 @@ class BookingStatusUpdateView(generics.UpdateAPIView):
         booking.status = new_status
         booking.save(update_fields=["status"])
 
+        if new_status == Booking.Status.ACCEPTED:
+            title = "Booking accepted"
+            message = f"Your booking for {booking.service.title} was accepted."
+        else:
+            title = "Booking rejected"
+            message = f"Your booking for {booking.service.title} was rejected."
+
+        create_notification(
+            recipient=booking.customer,
+            notification_type="BOOKING",
+            title=title,
+            message=message,
+        )
+
         return Response(
             BookingSerializer(booking).data,
             status=status.HTTP_200_OK,
         )
+
 
 class BookingCancelView(generics.UpdateAPIView):
     serializer_class = BookingSerializer
@@ -166,10 +223,21 @@ class BookingCancelView(generics.UpdateAPIView):
         booking.status = Booking.Status.CANCELLED
         booking.save(update_fields=["status"])
 
+        create_notification(
+            recipient=booking.service.provider,
+            notification_type="BOOKING",
+            title="Booking cancelled",
+            message=(
+                f"{booking.customer.username} cancelled their booking "
+                f"for {booking.service.title}."
+            ),
+        )
+
         return Response(
             BookingSerializer(booking).data,
             status=status.HTTP_200_OK,
         )
+
 
 class BookingCompleteView(generics.UpdateAPIView):
     serializer_class = BookingSerializer
@@ -186,6 +254,16 @@ class BookingCompleteView(generics.UpdateAPIView):
 
         booking.status = Booking.Status.COMPLETED
         booking.save(update_fields=["status"])
+
+        create_notification(
+            recipient=booking.customer,
+            notification_type="BOOKING",
+            title="Booking completed",
+            message=(
+                f"Your booking for {booking.service.title} "
+                f"has been marked completed. Leave a review!"
+            ),
+        )
 
         return Response(
             BookingSerializer(booking).data,
