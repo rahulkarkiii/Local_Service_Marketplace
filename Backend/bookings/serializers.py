@@ -9,6 +9,7 @@ class BookingSerializer(serializers.ModelSerializer):
             "customer",
             "service",
             "booking_date",
+            "booking_time",
             "notes",
             "status",
             "created_at",
