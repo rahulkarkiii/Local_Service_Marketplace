@@ -17,8 +17,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         read_only_fields = [
             "id",
             "customer",
-            "service",
-            "booking",
             "created_at",
         ]
 
