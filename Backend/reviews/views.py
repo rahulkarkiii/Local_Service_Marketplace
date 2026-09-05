@@ -4,6 +4,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from .models import Review
 from .serializers import ReviewSerializer
+from notifications.services import create_notification
 
 
 class ReviewListCreateView(generics.ListCreateAPIView):
@@ -14,7 +15,6 @@ class ReviewListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         user = self.request.user
 
-        # Only customers can create reviews.
         if user.role != "CUSTOMER":
             raise PermissionDenied(
                 "Only customers can create reviews."
@@ -23,31 +23,37 @@ class ReviewListCreateView(generics.ListCreateAPIView):
         booking = serializer.validated_data["booking"]
         service = serializer.validated_data["service"]
 
-        # Booking must belong to the authenticated customer.
         if booking.customer != user:
             raise PermissionDenied(
                 "You can only review your own bookings."
             )
 
-        # Booking must be completed.
         if booking.status != "COMPLETED":
             raise ValidationError(
                 "You can only review completed bookings."
             )
 
-        # Booking and service must match.
         if booking.service != service:
             raise ValidationError(
                 "The booking does not belong to this service."
             )
 
-        # Prevent duplicate reviews.
         if Review.objects.filter(booking=booking).exists():
             raise ValidationError(
                 "This booking has already been reviewed."
             )
 
-        serializer.save(customer=user)
+        review = serializer.save(customer=user)
+
+        create_notification(
+            recipient=service.provider,
+            notification_type="REVIEW",
+            title="New review received",
+            message=(
+                f"{user.username} left a {review.rating}-star review "
+                f"for {service.title}."
+            ),
+        )
 
 
 class ReviewDetailView(generics.RetrieveUpdateDestroyAPIView):
