@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from django.db.models import Avg
 from .models import Provider, Availability
 
 
@@ -37,7 +37,6 @@ class ProviderSerializer(serializers.ModelSerializer):
         ]
 
     def get_average_rating(self, obj):
-        from django.db.models import Avg
         result = obj.account.services.aggregate(avg=Avg("reviews__rating"))["avg"]
         return round(result, 2) if result is not None else None
 
