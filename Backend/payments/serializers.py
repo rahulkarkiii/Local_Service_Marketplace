@@ -23,3 +23,5 @@ class PaymentSerializer(serializers.ModelSerializer):
             "transaction_id",
             "created_at",
         ]
+class PaymentVerifySerializer(serializers.Serializer):
+    success = serializers.BooleanField(required=False, default=True)
