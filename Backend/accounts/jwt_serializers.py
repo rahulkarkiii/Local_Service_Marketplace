@@ -3,7 +3,7 @@ from .models import Account
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
-    def get_token(cls, user):
+    def get_token(cls, user: Account):
         token = super().get_token(user)
 
         token["user_id"] = user.id
