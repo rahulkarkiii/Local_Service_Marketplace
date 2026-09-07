@@ -33,6 +33,7 @@ class Booking(models.Model):
         choices=Status.choices,
         default=Status.PENDING,
     )
+    reminder_sent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"{self.customer.username} - {self.service.title}"
