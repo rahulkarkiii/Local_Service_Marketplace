@@ -11,9 +11,9 @@ from rest_framework import status
 
 from .models import Payment
 from drf_spectacular.utils import extend_schema
-from .serializers import PaymentSerializer, PaymentVerifySerializer
+from .serializers import PaymentSerializer
 from notifications.services import create_notification
-from .gateway import initiate_gateway_payment, verify_gateway_payment
+from .gateway import initiate_gateway_payment, verify_gateway_payment, KhaltiError
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
@@ -131,6 +131,7 @@ class ProviderEarningsView(APIView):
             }
         )
 
+
 class PaymentInitiateView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -158,7 +159,13 @@ class PaymentInitiateView(APIView):
                 "Only online payments go through the gateway."
             )
 
-        gateway_result = initiate_gateway_payment(payment)
+        try:
+            gateway_result = initiate_gateway_payment(payment)
+        except KhaltiError as exc:
+            return Response(
+                {"detail": "Could not start payment with Khalti.", "error": str(exc)},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
         payment.transaction_id = gateway_result["transaction_id"]
         payment.save(update_fields=["transaction_id"])
@@ -172,9 +179,10 @@ class PaymentInitiateView(APIView):
             status=status.HTTP_200_OK,
         )
 
-@extend_schema(request=PaymentVerifySerializer)
 class PaymentVerifyView(APIView):
     permission_classes = [IsAuthenticated]
+    KHALTI_SUCCESS_STATUSES = {"Completed"}
+    KHALTI_FAILURE_STATUSES = {"Expired", "User canceled", "Refunded", "Partial Refund"}
 
     def post(self, request, pk):
         try:
@@ -200,12 +208,15 @@ class PaymentVerifyView(APIView):
                 "Payment has not been initiated with the gateway yet."
             )
 
-        simulate_success = request.data.get("success", True)
-        verified = verify_gateway_payment(
-            payment.transaction_id, simulate_success=simulate_success
-        )
+        try:
+            khalti_status = verify_gateway_payment(payment.transaction_id)
+        except KhaltiError as exc:
+            return Response(
+                {"detail": "Could not verify payment with Khalti.", "error": str(exc)},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
 
-        if verified:
+        if khalti_status in self.KHALTI_SUCCESS_STATUSES:
             payment.status = Payment.Status.COMPLETED
             payment.save(update_fields=["status"])
 
@@ -228,7 +239,8 @@ class PaymentVerifyView(APIView):
                     f"{payment.booking.service.title} was successful."
                 ),
             )
-        else:
+
+        elif khalti_status in self.KHALTI_FAILURE_STATUSES:
             payment.status = Payment.Status.FAILED
             payment.save(update_fields=["status"])
 
