@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.db.models import Avg
 from .models import Provider, Availability
+from .geocoding import geocode_address
 
 
 class ProviderSerializer(serializers.ModelSerializer):
@@ -10,6 +11,7 @@ class ProviderSerializer(serializers.ModelSerializer):
     )
     average_rating = serializers.SerializerMethodField()
     review_count = serializers.SerializerMethodField()
+    geocoding_warning = serializers.SerializerMethodField()
 
     class Meta:
         model = Provider
@@ -27,6 +29,7 @@ class ProviderSerializer(serializers.ModelSerializer):
             "is_verified",
             "average_rating",
             "review_count",
+            "geocoding_warning",
             "created_at",
         ]
         read_only_fields = [
@@ -35,6 +38,45 @@ class ProviderSerializer(serializers.ModelSerializer):
             "is_verified",
             "created_at",
         ]
+
+    def get_geocoding_warning(self, obj):
+        return getattr(self, "_geocoding_warning", None)
+
+    def create(self, validated_data):
+        self._maybe_geocode(validated_data)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        address_changed = (
+                "address" in validated_data
+                and validated_data["address"] != instance.address
+        )
+        missing_coords = instance.latitude is None or instance.longitude is None
+
+        if address_changed or missing_coords:
+            self._maybe_geocode(validated_data, instance=instance)
+
+        return super().update(instance, validated_data)
+
+    def _maybe_geocode(self, validated_data, instance=None):
+        if "latitude" in validated_data or "longitude" in validated_data:
+            return
+
+        address = validated_data.get("address", getattr(instance, "address", None))
+        if not address:
+            return
+
+        latitude, longitude = geocode_address(address)
+
+        if latitude is not None and longitude is not None:
+            validated_data["latitude"] = latitude
+            validated_data["longitude"] = longitude
+        else:
+            self._geocoding_warning = (
+                f"Could not determine coordinates for address '{address}'. "
+                "You can set latitude/longitude manually, or check the address "
+                "for typos."
+            )
 
     def get_average_rating(self, obj):
         result = obj.account.services.aggregate(avg=Avg("reviews__rating"))["avg"]
