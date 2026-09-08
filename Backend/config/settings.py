@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR.parent / ".env")
+load_dotenv(BASE_DIR / ".env")
 
 
 SECRET_KEY = os.getenv(
@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "corsheaders",
+    "drf_spectacular",
 
     # Local apps
     "accounts",
@@ -135,6 +136,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": (
         "rest_framework.permissions.IsAuthenticated",
     ),
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 
@@ -147,3 +149,25 @@ CORS_ALLOWED_ORIGINS = [
     ).split(",")
     if origin.strip()
 ]
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Local Service Marketplace API",
+    "DESCRIPTION": "API for customers, service providers, bookings, and reviews.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "COMPONENT_SPLIT_REQUEST": True,
+}
+
+# Khalti ePayment (KPG-2) — sandbox by default
+KHALTI_BASE_URL = os.getenv("KHALTI_BASE_URL", "https://dev.khalti.com/api/v2")
+KHALTI_SECRET_KEY = os.getenv("KHALTI_SECRET_KEY", "")
+KHALTI_WEBSITE_URL = os.getenv("KHALTI_WEBSITE_URL", "http://localhost:5173")
+KHALTI_RETURN_URL = os.getenv(
+    "KHALTI_RETURN_URL", "http://localhost:5173/payment/callback"
+)
+
+# OpenStreetMap Nominatim geocoding — requires a descriptive User-Agent
+GEOCODING_USER_AGENT = os.getenv(
+    "GEOCODING_USER_AGENT",
+    "local-service-marketplace/1.0 (contact: you@example.com)",
+)
