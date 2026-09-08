@@ -1,0 +1,30 @@
+# Environment variables — never commit real secrets
+.env
+
+# Don't commit the zip export
+Backend.zip
+*.zip
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Django
+db.sqlite3
+*.sqlite3
+staticfiles/
+media/
+
+# IDE
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
