@@ -11,7 +11,11 @@ class CustomerListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Customer.objects.all()
+        user = self.request.user
+        if user.role == "ADMIN":
+            return Customer.objects.all()
+
+        return Customer.objects.filter(account=user)
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -34,7 +38,11 @@ class CustomerDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Customer.objects.all()
+        user = self.request.user
+        if user.role == "ADMIN":
+            return Customer.objects.all()
+
+        return Customer.objects.filter(account=user)
 
     def perform_update(self, serializer):
         user = self.request.user
