@@ -19,13 +19,13 @@ from .serializers import AnalyticsSerializer
 class AnalyticsListCreateView(generics.ListCreateAPIView):
     queryset = Analytics.objects.all()
     serializer_class = AnalyticsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
 
 class AnalyticsDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Analytics.objects.all()
     serializer_class = AnalyticsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAdmin]
 
 
 class AnalyticsDashboardView(APIView):
