@@ -71,6 +71,20 @@ class BookingListCreateView(generics.ListCreateAPIView):
                     "This provider is not available at the selected time."
                 )
 
+        if booking_time is not None:
+            conflict_exists = Booking.objects.filter(
+                service__provider=provider,
+                booking_date=booking_date,
+                booking_time=booking_time,
+                status__in=[Booking.Status.PENDING, Booking.Status.ACCEPTED],
+            ).exists()
+
+            if conflict_exists:
+                raise ValidationError(
+                    "This provider already has a booking request or "
+                    "confirmed booking at that date and time."
+                )
+
         booking = serializer.save(customer=self.request.user)
 
         create_notification(
