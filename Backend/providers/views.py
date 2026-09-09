@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from accounts.permissions import IsProvider, IsAdmin
 from drf_spectacular.utils import OpenApiParameter, extend_schema
+from django.db.models import  Avg
 
 from .models import Provider, Availability
 from .serializers import ProviderSerializer, ProviderVerifySerializer, AvailabilitySerializer
@@ -34,6 +35,13 @@ from .serializers import ProviderSerializer, ProviderVerifySerializer, Availabil
             description="Search radius in kilometers.",
             required=False,
         ),
+        OpenApiParameter(
+            name="min_rating",
+            type=float,
+            location=OpenApiParameter.QUERY,
+            description="Minimum average rating filter (0-5).",
+            required=False,
+        ),
     ]
 )
 
@@ -48,6 +56,19 @@ class ProviderListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         queryset = Provider.objects.all()
+        min_rating = self.request.query_params.get("min_rating")
+        if min_rating:
+            try:
+                min_rating = float(min_rating)
+            except ValueError:
+                raise ValidationError("min_rating must be a valid number.")
+
+            if not 0 <= min_rating <= 5:
+                raise ValidationError("min_rating must be between 0 and 5.")
+
+            queryset = queryset.annotate(
+                avg_rating=Avg("account__services__reviews__rating")
+            ).filter(avg_rating__gte=min_rating)
 
         latitude = self.request.query_params.get("latitude")
         longitude = self.request.query_params.get("longitude")
