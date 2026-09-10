@@ -58,3 +58,18 @@ class MeSerializer(serializers.ModelSerializer):
             "id",
             "role",
         ]
+class AccountAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = [
+            "id",
+            "username",
+            "email",
+            "first_name",
+            "last_name",
+            "role",
+            "is_active",
+            "date_joined",
+            "last_login",
+        ]
+        read_only_fields = ["id", "username", "email", "date_joined", "last_login"]
