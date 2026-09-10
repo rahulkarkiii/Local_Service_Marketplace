@@ -31,6 +31,7 @@ import ProviderProfile from "./pages/provider/Profile"
 // admin
 import AdminOverview from "./pages/admin/Overview"
 import AdminProviders from "./pages/admin/Providers"
+import AdminAccounts from "./pages/admin/Accounts"
 import AdminCategories from "./pages/admin/Categories"
 import AdminAnalytics from "./pages/admin/Analytics"
 import AdminReports from "./pages/admin/Reports"
@@ -104,6 +105,7 @@ export default function App() {
         <Route path="admin" element={<ProtectedRoute roles={["ADMIN"]}><DashboardLayout role="ADMIN" /></ProtectedRoute>}>
           <Route index element={<AdminOverview />} />
           <Route path="providers" element={<AdminProviders />} />
+          <Route path="accounts" element={<AdminAccounts />} />
           <Route path="categories" element={<AdminCategories />} />
           <Route path="bookings" element={<AdminBookings />} />
           <Route path="payments" element={<AdminPayments />} />

@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom"
-import { LayoutDashboard, Calendar, Briefcase, CreditCard, Star, User, Clock, BarChart3, ShieldCheck, Flag, Bell, Settings, LogOut, Menu, X } from "lucide-react"
+import { LayoutDashboard, Calendar, Briefcase, CreditCard, Star, User, Clock, BarChart3, ShieldCheck, Flag, Bell, Settings, LogOut, Menu, X, Users } from "lucide-react"
 import { useState } from "react"
 import useAuthStore from "../../stores/authStore"
 import { Button } from "../ui/button"
@@ -56,6 +56,7 @@ export default function DashboardLayout({ role }) {
   const adminLinks = [
     { to: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
     { to: "/admin/providers", icon: ShieldCheck, label: "Providers" },
+    { to: "/admin/accounts", icon: Users, label: "Accounts" },
     { to: "/admin/categories", icon: Briefcase, label: "Categories" },
     { to: "/admin/bookings", icon: Calendar, label: "Bookings" },
     { to: "/admin/payments", icon: CreditCard, label: "Payments" },
