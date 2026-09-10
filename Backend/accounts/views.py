@@ -1,8 +1,9 @@
 from rest_framework import generics
+from accounts.permissions import IsAdmin
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from .models import Account
-from .serializers import RegisterSerializer, MeSerializer
+from .serializers import RegisterSerializer, MeSerializer, AccountAdminSerializer
 
 
 class RegisterView(generics.CreateAPIView):
@@ -17,3 +18,14 @@ class MeView(generics.RetrieveAPIView):
 
     def get_object(self):
         return self.request.user
+
+class AccountListView(generics.ListAPIView):
+    queryset = Account.objects.all().order_by("-date_joined")
+    serializer_class = AccountAdminSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
+
+
+class AccountDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Account.objects.all()
+    serializer_class = AccountAdminSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
