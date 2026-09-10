@@ -4,6 +4,7 @@ import { Wrench, ArrowRight, Check, ShieldCheck } from "lucide-react"
 import useAuthStore from "../stores/authStore"
 import { Button } from "../components/ui/button"
 import { Input, Label, Select } from "../components/ui/input"
+import { ThemeToggle } from "../components/ui/theme-toggle"
 
 export default function Register() {
   const [form, setForm] = useState({ username:"", email:"", password:"", role:"CUSTOMER" })
@@ -42,7 +43,10 @@ export default function Register() {
 
   return (
     <div className="min-h-[calc(100vh-64px)] grid lg:grid-cols-2">
-      <div className="flex items-center justify-center p-6 sm:p-10 bg-white">
+      <div className="flex items-center justify-center p-6 sm:p-10 bg-white dark:bg-zinc-900 relative">
+        <div className="absolute top-4 right-4">
+          <ThemeToggle />
+        </div>
         <div className="w-full max-w-[460px]">
           <Link to="/" className="inline-flex items-center gap-2 mb-8">
             <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 grid place-items-center"><Wrench className="h-5 w-5 text-white"/></div>

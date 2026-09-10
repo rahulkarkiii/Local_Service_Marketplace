@@ -3,6 +3,7 @@ import { LayoutDashboard, Calendar, Briefcase, CreditCard, Star, User, Clock, Ba
 import { useState } from "react"
 import useAuthStore from "../../stores/authStore"
 import { Button } from "../ui/button"
+import { ThemeTogglePill } from "../ui/theme-toggle"
 
 function SidebarLink({ to, icon: Icon, label, end }) {
   return (
@@ -11,7 +12,7 @@ function SidebarLink({ to, icon: Icon, label, end }) {
       end={end}
       className={({ isActive }) =>
         `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-          isActive ? "bg-zinc-900 text-white shadow-sm" : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"
+          isActive ? "bg-zinc-900 dark:bg-white dark:text-zinc-900 text-white shadow-sm" : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
         }`
       }
     >
@@ -67,21 +68,21 @@ export default function DashboardLayout({ role }) {
   const title = role === "ADMIN" ? "Admin Panel" : role === "PROVIDER" ? "Provider Hub" : "Customer Dashboard"
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-zinc-50 flex">
+    <div className="min-h-[calc(100vh-64px)] bg-zinc-50 dark:bg-zinc-950 flex">
       {/* Mobile overlay */}
       {open && <div className="fixed inset-0 bg-black/30 z-40 lg:hidden" onClick={()=>setOpen(false)} />}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-[64px] lg:top-0 z-50 h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] w-[280px] bg-white border-r flex flex-col transition-transform lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
-        <div className="p-6 border-b">
+      <aside className={`fixed lg:sticky top-[64px] lg:top-0 z-50 h-[calc(100vh-64px)] lg:h-[calc(100vh-64px)] w-[280px] bg-white dark:bg-zinc-900 border-r dark:border-zinc-800 flex flex-col transition-transform lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"}`}>
+        <div className="p-6 border-b dark:border-zinc-800">
           <div className="flex items-center justify-between">
             <div>
               <div className="font-display font-bold text-[15px]">{title}</div>
               <div className="text-xs text-muted-foreground">Welcome, {user?.username}</div>
             </div>
-            <button onClick={()=>setOpen(false)} className="lg:hidden h-8 w-8 grid place-items-center rounded-lg hover:bg-zinc-100"><X className="h-4 w-4"/></button>
+            <button onClick={()=>setOpen(false)} className="lg:hidden h-8 w-8 grid place-items-center rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800"><X className="h-4 w-4"/></button>
           </div>
-          <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-zinc-50 border">
+          <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border dark:border-zinc-700">
             <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 grid place-items-center text-white font-bold">{user?.username?.[0]?.toUpperCase()}</div>
             <div className="min-w-0">
               <div className="text-sm font-semibold truncate">{user?.username}</div>
@@ -95,8 +96,11 @@ export default function DashboardLayout({ role }) {
           {links.map(l => <SidebarLink key={l.to} {...l} />)}
         </nav>
 
-        <div className="p-3 border-t space-y-2">
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-600 hover:bg-red-50 hover:text-red-600 transition-colors">
+        <div className="p-3 border-t dark:border-zinc-800 space-y-2">
+          <div className="flex justify-center">
+            <ThemeTogglePill />
+          </div>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-zinc-600 dark:text-zinc-400 hover:bg-red-50 dark:hover:bg-red-950/50 hover:text-red-600 dark:hover:text-red-400 transition-colors">
             <LogOut className="h-[18px] w-[18px]" /> Log out
           </button>
           <div className="text-[11px] text-center text-muted-foreground">SewaNepal • Secure • Verified</div>
@@ -105,9 +109,10 @@ export default function DashboardLayout({ role }) {
 
       {/* Main */}
       <div className="flex-1 min-w-0">
-        <div className="lg:hidden sticky top-[64px] z-30 bg-white border-b px-4 py-3 flex items-center gap-3">
+        <div className="lg:hidden sticky top-[64px] z-30 bg-white dark:bg-zinc-900 border-b dark:border-zinc-800 px-4 py-3 flex items-center gap-3">
           <Button variant="outline" size="sm" onClick={()=>setOpen(true)}><Menu className="h-4 w-4"/> Menu</Button>
           <span className="font-semibold text-sm">{title}</span>
+          <div className="ml-auto"><ThemeTogglePill /></div>
         </div>
         <div className="p-4 sm:p-6 lg:p-8 max-w-[1200px] mx-auto">
           <Outlet />

@@ -11,6 +11,7 @@ import Login from "./pages/Login"
 import Register from "./pages/Register"
 import { ProtectedRoute, PublicOnly } from "./hooks/useRequireAuth"
 import useAuthStore from "./stores/authStore"
+import useThemeStore from "./stores/themeStore"
 
 // customer
 import CustomerOverview from "./pages/customer/Overview"
@@ -53,7 +54,9 @@ function RoleRedirect() {
 export default function App() {
   const fetchMe = useAuthStore(s=>s.fetchMe)
   const token = useAuthStore(s=>s.accessToken)
+  const initTheme = useThemeStore(s=>s.init)
   useEffect(()=> {
+    initTheme()
     if (token) fetchMe()
   }, [])
 

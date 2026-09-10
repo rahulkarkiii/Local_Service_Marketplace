@@ -3,7 +3,7 @@ import { Wrench, MapPin, Phone, Mail, Share2 } from "lucide-react"
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-zinc-50">
+    <footer className="border-t bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
           <div className="space-y-4">

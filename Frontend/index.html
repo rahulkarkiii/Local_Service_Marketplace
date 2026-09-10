@@ -7,6 +7,15 @@
     <title>SewaNepal — Find Trusted Local Services</title>
     <meta name="description" content="Connect with verified plumbers, electricians, tutors and more in Nepal. Book instantly, pay securely via Khalti." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <script>
+      (function() {
+        try {
+          var t = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (t === 'dark' || (!t && prefersDark)) document.documentElement.classList.add('dark');
+        } catch(e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

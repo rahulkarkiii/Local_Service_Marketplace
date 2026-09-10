@@ -4,6 +4,7 @@ import { Search, Bell, User, LogOut, LayoutDashboard, Menu, X, Wrench, Sparkles 
 import useAuthStore from "../../stores/authStore"
 import { Button } from "../ui/button"
 import { Badge } from "../ui/badge"
+import { ThemeToggle } from "../ui/theme-toggle"
 import client from "../../api/client"
 
 export default function Navbar() {
@@ -30,8 +31,8 @@ export default function Navbar() {
 
   const dashboardLink = role === "ADMIN" ? "/admin" : role === "PROVIDER" ? "/provider" : role === "CUSTOMER" ? "/customer" : "/"
 
-  return (
-    <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60">
+    return (
+    <header className="sticky top-0 z-50 w-full border-b bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-zinc-900/60">
       <div className="mx-auto max-w-[1280px] px-4 sm:px-6 flex h-[64px] items-center justify-between gap-4">
         <div className="flex items-center gap-8">
           <Link to="/" className="flex items-center gap-2.5">
@@ -45,21 +46,22 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-1">
-            <NavLink to="/services" className={({isActive})=>`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive?"bg-zinc-900 text-white":"text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"}`}>Services</NavLink>
-            <NavLink to="/providers" className={({isActive})=>`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive?"bg-zinc-900 text-white":"text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900"}`}>Providers</NavLink>
-            <Link to="/#how-it-works" className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-600 hover:bg-zinc-100">How it works</Link>
+            <NavLink to="/services" className={({isActive})=>`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive?"bg-zinc-900 dark:bg-white dark:text-zinc-900 text-white":"text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"}`}>Services</NavLink>
+            <NavLink to="/providers" className={({isActive})=>`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive?"bg-zinc-900 dark:bg-white dark:text-zinc-900 text-white":"text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-white"}`}>Providers</NavLink>
+            <Link to="/#how-it-works" className="px-3 py-2 rounded-lg text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800">How it works</Link>
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
-          <Link to="/services" className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white hover:bg-zinc-50 transition-colors">
-            <Search className="h-4 w-4 text-zinc-600" />
+          <ThemeToggle />
+          <Link to="/services" className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+            <Search className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
           </Link>
 
           {isAuthenticated() ? (
             <>
-              <Link to="/notifications" className="relative hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white hover:bg-zinc-50 transition-colors">
-                <Bell className="h-4 w-4 text-zinc-600" />
+              <Link to="/notifications" className="relative hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+                <Bell className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
                 {notifCount > 0 && <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">{notifCount>9? "9+": notifCount}</span>}
               </Link>
               <Link to={dashboardLink} className="hidden sm:inline-flex">
@@ -67,7 +69,7 @@ export default function Navbar() {
                   <LayoutDashboard className="h-4 w-4" /> Dashboard
                 </Button>
               </Link>
-              <div className="hidden sm:flex items-center gap-2 pl-2 ml-1 border-l">
+              <div className="hidden sm:flex items-center gap-2 pl-2 ml-1 border-l dark:border-zinc-800">
                 <div className="text-right hidden md:block">
                   <div className="text-sm font-semibold leading-none">{user?.username}</div>
                   <div className="text-xs text-muted-foreground capitalize">{role?.toLowerCase()}</div>
@@ -75,7 +77,7 @@ export default function Navbar() {
                 <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm">
                   {user?.username?.[0]?.toUpperCase()}
                 </div>
-                <button onClick={handleLogout} className="h-9 w-9 grid place-items-center rounded-xl hover:bg-zinc-100 text-zinc-500">
+                <button onClick={handleLogout} className="h-9 w-9 grid place-items-center rounded-xl hover:bg-zinc-100 dark:hover:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
                   <LogOut className="h-4 w-4" />
                 </button>
               </div>
@@ -91,14 +93,14 @@ export default function Navbar() {
             </>
           )}
 
-          <button onClick={()=>setMobileOpen(!mobileOpen)} className="lg:hidden h-9 w-9 grid place-items-center rounded-xl border bg-white">
+          <button onClick={()=>setMobileOpen(!mobileOpen)} className="lg:hidden h-9 w-9 grid place-items-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700">
             {mobileOpen ? <X className="h-4 w-4"/> : <Menu className="h-4 w-4"/>}
           </button>
         </div>
       </div>
 
       {mobileOpen && (
-        <div className="lg:hidden border-t bg-white px-4 py-4 space-y-3 animate-slide-up">
+        <div className="lg:hidden border-t bg-white dark:bg-zinc-900 px-4 py-4 space-y-3 animate-slide-up">
           <Link to="/services" onClick={()=>setMobileOpen(false)} className="block py-2 font-medium">Services</Link>
           <Link to="/providers" onClick={()=>setMobileOpen(false)} className="block py-2 font-medium">Providers</Link>
           {isAuthenticated() ? (
