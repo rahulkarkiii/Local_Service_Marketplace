@@ -20,16 +20,28 @@ const categories = [
 
 export default function Home() {
   const [services, setServices] = useState([])
-  const [stats, setStats] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
   const [search, setSearch] = useState("")
   const [location, setLocation] = useState("")
 
-  useEffect(() => {
-    client.get("/services/").then(r => {
+  const fetchFeatured = async () => {
+    setLoading(true)
+    setError("")
+    try {
+      const r = await client.get("/services/")
       const data = Array.isArray(r.data) ? r.data : r.data.results || []
       setServices(data.slice(0, 6))
-    }).catch(()=>{})
-    // try fetch dashboard if admin else ignore
+    } catch (err) {
+      setError("Unable to load featured services. Please try again later.")
+      setServices([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchFeatured()
   }, [])
 
   return (
@@ -174,10 +186,24 @@ export default function Home() {
           </div>
           <Link to="/services" className="text-sm font-semibold text-violet-600 inline-flex items-center gap-1 hover:gap-2 transition-all">Browse all <ArrowRight className="h-4 w-4"/></Link>
         </div>
-        {services.length === 0 ? (
+        {loading ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1,2,3,4,5,6].map(i=> <Card key={i} className="p-6 animate-pulse"><div className="h-24 bg-zinc-100 rounded-xl"/><div className="h-4 bg-zinc-100 rounded mt-4 w-3/4"/><div className="h-3 bg-zinc-100 rounded mt-2 w-1/2"/></Card>)}
           </div>
+        ) : error ? (
+          <Card className="p-8 text-center">
+            <div className="mx-auto h-12 w-12 rounded-2xl bg-red-50 grid place-items-center text-xl">⚠️</div>
+            <h3 className="font-semibold mt-4">Failed to load featured services</h3>
+            <p className="text-sm text-muted-foreground mt-1">{error}</p>
+            <Button onClick={fetchFeatured} variant="outline" className="mt-4 rounded-xl">Try again</Button>
+          </Card>
+        ) : services.length === 0 ? (
+          <Card className="p-12 text-center">
+            <div className="mx-auto h-16 w-16 rounded-2xl bg-zinc-100 grid place-items-center text-2xl">✨</div>
+            <h3 className="font-semibold mt-4">No featured services available yet</h3>
+            <p className="text-sm text-muted-foreground mt-1">Check back soon — our providers are adding new services every day.</p>
+            <Link to="/services"><Button variant="outline" className="mt-4 rounded-xl">Browse all services</Button></Link>
+          </Card>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map(s=> (

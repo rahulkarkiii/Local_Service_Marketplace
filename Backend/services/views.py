@@ -1,7 +1,7 @@
 from rest_framework import generics
 from math import cos, radians, atan2, sin, sqrt
 from rest_framework.exceptions import ValidationError, PermissionDenied
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from accounts.permissions import IsAdmin, IsVerifiedProvider
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from django.db.models import Avg
@@ -78,7 +78,7 @@ class ServiceListCreateView(generics.ListCreateAPIView):
 
     def get_permissions(self):
         if self.request.method == "GET":
-            return [IsAuthenticated()]
+            return [AllowAny()]
 
         return [IsAuthenticated(), IsVerifiedProvider()]
 
@@ -146,6 +146,11 @@ class ServiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Service.objects.select_related("category", "provider")
     serializer_class = ServiceSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [AllowAny()]
+        return [IsAuthenticated()]
 
     def perform_update(self, serializer):
         user = self.request.user
