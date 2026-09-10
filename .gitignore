@@ -1,5 +1,9 @@
 # Environment variables — never commit real secrets
 .env
+Backend/.env
+Frontend/.env
+Frontend/.env.local
+!Frontend/.env.example
 
 # Don't commit the zip export
 Backend.zip
@@ -28,3 +32,9 @@ media/
 # OS
 .DS_Store
 Thumbs.db
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.vite/
+Frontend/coverage/
