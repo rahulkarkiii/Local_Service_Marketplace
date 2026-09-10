@@ -61,7 +61,7 @@ export default function Login() {
               </div>
             </div>
             {error && <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">{error}</div>}
-            <Button type="submit" disabled={loading} className="w-full h-11 rounded-xl bg-zinc-900 hover:bg-black text-base gap-2">
+            <Button type="submit" disabled={loading} className="w-full h-11 rounded-xl text-base gap-2">
               {loading ? "Signing in..." : "Sign in"} <ArrowRight className="h-4 w-4"/>
             </Button>
             <div className="text-sm text-center text-muted-foreground">

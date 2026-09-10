@@ -82,7 +82,7 @@ export default function ServiceDetail() {
               {service.average_rating && <div className="absolute top-4 right-4 bg-zinc-900 text-white px-3 py-1.5 rounded-full text-sm font-bold flex items-center gap-1.5"><Star className="h-4 w-4 fill-amber-400 text-amber-400"/>{service.average_rating} <span className="font-normal text-zinc-300">({service.review_count})</span></div>}
             </div>
             <CardContent className="p-6">
-              <h1 className="text-2xl font-extrabold tracking-tight">{service.title}</h1>
+              <h1 className="page-title">{service.title}</h1>
               <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1"><MapPin className="h-4 w-4"/>{service.location}</span>
                 <span className="flex items-center gap-1"><Clock className="h-4 w-4"/>{service.duration} minutes</span>

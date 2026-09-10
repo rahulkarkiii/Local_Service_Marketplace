@@ -43,6 +43,17 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      fontSize: {
+        xs: ["11px", { lineHeight: "14px", letterSpacing: "0.02em" }],
+        sm: ["13px", { lineHeight: "18px" }],
+        base: ["14px", { lineHeight: "20px" }],
+        lg: ["16px", { lineHeight: "22px" }],
+        xl: ["18px", { lineHeight: "24px" }],
+        "2xl": ["22px", { lineHeight: "28px" }],
+        "3xl": ["28px", { lineHeight: "32px" }],
+        "4xl": ["36px", { lineHeight: "36px" }],
+        "5xl": ["48px", { lineHeight: "48px" }],
+      },
       fontFamily: {
         display: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
         sans: ["Inter", "system-ui", "sans-serif"],

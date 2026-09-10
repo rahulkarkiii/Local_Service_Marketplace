@@ -70,7 +70,7 @@ export default function ProviderProfile() {
   return (
     <div className="space-y-6 max-w-[720px]">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Provider Profile</h1>
+        <h1 className="page-title">Provider Profile</h1>
         <p className="text-muted-foreground mt-1">Business profile with auto-geocoding via OpenStreetMap. Latitude/longitude optional — will be inferred from address.</p>
       </div>
 
@@ -123,7 +123,7 @@ export default function ProviderProfile() {
             </div>
             {msg && <div className="text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3 whitespace-pre-wrap">{msg}</div>}
             {error && <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3 whitespace-pre-wrap">{error}</div>}
-            <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black">{profile?"Update profile":"Create profile"}</Button>
+            <Button type="submit" className="rounded-xl">{profile?"Update profile":"Create profile"}</Button>
           </form>
         </CardContent>
       </Card>

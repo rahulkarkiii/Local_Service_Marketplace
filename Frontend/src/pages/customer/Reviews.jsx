@@ -49,7 +49,7 @@ export default function CustomerReviews() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">My Reviews</h1>
+        <h1 className="page-title">My Reviews</h1>
         <p className="text-muted-foreground mt-1">One review per completed booking. Rating 1–5, enforced server-side.</p>
       </div>
 
@@ -77,7 +77,7 @@ export default function CustomerReviews() {
               <Textarea name="comment" placeholder="Great service, on time..." className="mt-1.5" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black">Submit review</Button>
+              <Button type="submit" className="rounded-xl">Submit review</Button>
             </div>
           </form>
         </CardContent>

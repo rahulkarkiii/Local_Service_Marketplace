@@ -28,7 +28,7 @@ export default function CustomerOverview() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Welcome back, {user?.username} 👋</h1>
+        <h1 className="page-title">Welcome back, {user?.username} 👋</h1>
         <p className="text-muted-foreground mt-1">Here's what's happening with your bookings.</p>
       </div>
 
@@ -79,22 +79,22 @@ export default function CustomerOverview() {
         <Card>
           <CardHeader><CardTitle>Quick actions</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
-            <Link to="/services" className="rounded-2xl border p-4 hover:bg-zinc-50 transition-colors">
+            <Link to="/services" className="rounded-2xl border p-4 hover:bg-muted/40 transition-colors">
               <div className="h-9 w-9 rounded-xl bg-violet-100 grid place-items-center"><Calendar className="h-5 w-5 text-violet-600"/></div>
               <div className="text-sm font-semibold mt-2">Book a service</div>
               <div className="text-xs text-muted-foreground">Find & book in minutes</div>
             </Link>
-            <Link to="/customer/payments" className="rounded-2xl border p-4 hover:bg-zinc-50 transition-colors">
+            <Link to="/customer/payments" className="rounded-2xl border p-4 hover:bg-muted/40 transition-colors">
               <div className="h-9 w-9 rounded-xl bg-emerald-100 grid place-items-center"><CreditCard className="h-5 w-5 text-emerald-600"/></div>
               <div className="text-sm font-semibold mt-2">Pay with Khalti</div>
               <div className="text-xs text-muted-foreground">Secure, server-verified</div>
             </Link>
-            <Link to="/providers" className="rounded-2xl border p-4 hover:bg-zinc-50 transition-colors">
+            <Link to="/providers" className="rounded-2xl border p-4 hover:bg-muted/40 transition-colors">
               <div className="h-9 w-9 rounded-xl bg-sky-100 grid place-items-center"><Star className="h-5 w-5 text-sky-600"/></div>
               <div className="text-sm font-semibold mt-2">Find providers</div>
               <div className="text-xs text-muted-foreground">Nearby & verified</div>
             </Link>
-            <Link to="/reports" className="rounded-2xl border p-4 hover:bg-zinc-50 transition-colors">
+            <Link to="/reports" className="rounded-2xl border p-4 hover:bg-muted/40 transition-colors">
               <div className="h-9 w-9 rounded-xl bg-amber-100 grid place-items-center"><Clock className="h-5 w-5 text-amber-600"/></div>
               <div className="text-sm font-semibold mt-2">Get help</div>
               <div className="text-xs text-muted-foreground">Report an issue</div>

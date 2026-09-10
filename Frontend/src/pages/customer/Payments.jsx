@@ -75,7 +75,7 @@ export default function CustomerPayments() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Payments</h1>
+        <h1 className="page-title">Payments</h1>
         <p className="text-muted-foreground mt-1">Pay for accepted/completed bookings. Khalti flow is server-verified: initiate → pay on Khalti → verify.</p>
       </div>
 
@@ -100,7 +100,7 @@ export default function CustomerPayments() {
               </Select>
             </div>
             <div className="flex items-end">
-              <Button type="submit" className="w-full rounded-xl bg-zinc-900 hover:bg-black">Create payment</Button>
+              <Button type="submit" className="w-full rounded-xl">Create payment</Button>
             </div>
           </form>
         </CardContent>
@@ -110,19 +110,19 @@ export default function CustomerPayments() {
         <CardHeader><CardTitle>Payment history ({payments.length})</CardTitle></CardHeader>
         <CardContent>
           {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : payments.length===0 ? <p className="text-sm text-muted-foreground">No payments yet.</p> :
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border bg-card">
               <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b"><tr><th className="text-left py-2">ID</th><th className="text-left py-2">Booking</th><th className="text-left py-2">Amount</th><th className="text-left py-2">Method</th><th className="text-left py-2">Status</th><th className="text-left py-2">Txn</th><th className="text-left py-2">Actions</th></tr></thead>
+                <thead className="table-header"><tr><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">ID</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Booking</th><th className="text-right py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Amount</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Method</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Status</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Txn</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Actions</th></tr></thead>
                 <tbody>
                   {payments.map(p=> (
-                    <tr key={p.id} className="border-b last:border-0 hover:bg-zinc-50">
-                      <td className="py-3 font-medium">#{p.id}</td>
-                      <td className="py-3">#{p.booking}</td>
-                      <td className="py-3 font-semibold">{formatPrice(p.amount)}</td>
-                      <td className="py-3"><Badge variant="secondary">{p.payment_method}</Badge></td>
-                      <td className="py-3"><StatusBadge status={p.status}/></td>
-                      <td className="py-3 text-xs truncate max-w-[140px]">{p.transaction_id || "—"}</td>
-                      <td className="py-3 flex flex-wrap gap-1">
+                    <tr key={p.id} className="table-row">
+                      <td className="py-3.5 px-4 font-medium">#{p.id}</td>
+                      <td className="py-3.5 px-4">#{p.booking}</td>
+                      <td className="py-3.5 px-4 text-right font-semibold tabular-nums">{formatPrice(p.amount)}</td>
+                      <td className="py-3.5 px-4"><Badge variant="secondary">{p.payment_method}</Badge></td>
+                      <td className="py-3.5 px-4"><StatusBadge status={p.status}/></td>
+                      <td className="py-3.5 px-4 text-xs truncate max-w-[140px]">{p.transaction_id || "—"}</td>
+                      <td className="py-3.5 px-4 flex flex-wrap gap-1">
                         {p.status==="PENDING" && p.payment_method==="ONLINE" && (
                           <>
                             <Button size="sm" className="h-7 rounded-xl text-xs bg-violet-600 hover:bg-violet-700" onClick={()=>initiate(p.id)}>Initiate</Button>

@@ -6,7 +6,7 @@ export const Input = React.forwardRef(({ className, type="text", ...props }, ref
     <input
       type={type}
       className={cn(
-        "flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-50 transition-colors",
+        "flex h-10 w-full rounded-xl border-2 border-input bg-background px-3.5 py-2 text-[14px] font-normal ring-offset-background placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/20 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
         className
       )}
       ref={ref}
@@ -20,7 +20,7 @@ export const Textarea = React.forwardRef(({ className, ...props }, ref) => (
   <textarea
     ref={ref}
     className={cn(
-      "flex min-h-[90px] w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+      "flex min-h-[96px] w-full rounded-xl border-2 border-input bg-background px-3.5 py-2.5 text-[14px] ring-offset-background placeholder:text-muted-foreground/70 focus-visible:outline-none focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/20 disabled:cursor-not-allowed disabled:opacity-50 transition-all",
       className
     )}
     {...props}
@@ -29,14 +29,14 @@ export const Textarea = React.forwardRef(({ className, ...props }, ref) => (
 Textarea.displayName = "Textarea"
 
 export const Label = ({ className, ...props }) => (
-  <label className={cn("text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70", className)} {...props} />
+  <label className={cn("text-[13px] font-semibold leading-none tracking-wide text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70", className)} {...props} />
 )
 
 export const Select = React.forwardRef(({ className, children, ...props }, ref) => (
   <select
     ref={ref}
     className={cn(
-      "flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+      "flex h-10 w-full rounded-xl border-2 border-input bg-background px-3.5 py-2 text-[14px] focus-visible:outline-none focus-visible:border-violet-500 focus-visible:ring-2 focus-visible:ring-violet-500/20",
       className
     )}
     {...props}

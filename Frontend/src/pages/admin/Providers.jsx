@@ -29,7 +29,7 @@ export default function AdminProviders() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Provider Verification</h1>
+        <h1 className="page-title">Provider Verification</h1>
         <p className="text-muted-foreground mt-1">Admin-only: approve or reject provider profiles. IsVerifiedProvider gate controls who can list services.</p>
       </div>
       {msg && <div className="text-sm bg-zinc-900 text-white rounded-xl p-3">{msg}</div>}

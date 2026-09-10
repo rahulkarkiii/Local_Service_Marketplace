@@ -81,7 +81,7 @@ export default function Providers() {
             </Select>
           </div>
           <div className="flex items-end gap-2">
-            <Button onClick={()=>fetch(true)} className="flex-1 rounded-xl bg-zinc-900 hover:bg-black gap-1.5"><Search className="h-4 w-4"/> Search</Button>
+            <Button onClick={()=>fetch(true)} className="flex-1 rounded-xl gap-1.5"><Search className="h-4 w-4"/> Search</Button>
           </div>
         </div>
         <div className="mt-3 flex flex-wrap items-center gap-2">

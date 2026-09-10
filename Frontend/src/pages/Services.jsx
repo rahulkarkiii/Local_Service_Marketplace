@@ -119,7 +119,7 @@ export default function Services() {
                   </Select>
                 </div>
 
-                <Button onClick={apply} className="w-full rounded-xl bg-zinc-900 hover:bg-black">Apply filters</Button>
+                <Button onClick={apply} className="w-full rounded-xl">Apply filters</Button>
               </div>
             </Card>
 
@@ -134,7 +134,7 @@ export default function Services() {
         {/* Grid */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-4 mb-4">
-            <h1 className="text-2xl font-extrabold tracking-tight">Services <span className="text-muted-foreground font-medium text-lg">({services.length})</span></h1>
+            <h1 className="page-title">Services <span className="text-muted-foreground font-medium text-lg">({services.length})</span></h1>
             <div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
               <span>Trusted • Verified • Secure</span>
             </div>

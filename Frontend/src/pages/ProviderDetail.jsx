@@ -51,7 +51,7 @@ export default function ProviderDetail() {
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <h1 className="text-2xl font-extrabold tracking-tight">{provider.business_name}</h1>
+                  <h1 className="page-title">{provider.business_name}</h1>
                   <div className="flex flex-wrap items-center gap-2 mt-1.5">
                     {provider.is_verified ? <Badge variant="success" className="gap-1"><ShieldCheck className="h-3 w-3"/> Verified</Badge> : <Badge variant="secondary">Unverified</Badge>}
                     {provider.average_rating && <span className="flex items-center gap-1 text-sm font-bold"><Star className="h-4 w-4 fill-amber-400 text-amber-400"/>{provider.average_rating} <span className="font-normal text-muted-foreground">({provider.review_count} reviews)</span></span>}

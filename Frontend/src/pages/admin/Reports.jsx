@@ -32,7 +32,7 @@ export default function AdminReports() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Reports & Complaints</h1>
+        <h1 className="page-title">Reports & Complaints</h1>
         <p className="text-muted-foreground mt-1">Filter by status/type (admin). Users can only see their own reports.</p>
       </div>
       {msg && <div className="text-sm bg-zinc-900 text-white rounded-xl p-3">{msg}</div>}
@@ -58,7 +58,7 @@ export default function AdminReports() {
             <option value="OTHER">OTHER</option>
           </Select>
         </div>
-        <Button onClick={fetch} className="rounded-xl bg-zinc-900 hover:bg-black">Filter</Button>
+        <Button onClick={fetch} className="rounded-xl">Filter</Button>
         <Button variant="outline" className="rounded-xl" onClick={()=>{setFilter({status:"",report_type:""}); setTimeout(fetch,0)}}>Clear</Button>
       </Card>
 

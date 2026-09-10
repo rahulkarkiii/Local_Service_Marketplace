@@ -40,7 +40,7 @@ export default function Reports() {
   return (
     <div className="mx-auto max-w-[720px] space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Reports & Complaints</h1>
+        <h1 className="page-title">Reports & Complaints</h1>
         <p className="text-muted-foreground mt-1">Submit an issue about a booking, payment, service, or user. Admin will update status to REVIEWED/RESOLVED/REJECTED.</p>
       </div>
 
@@ -69,7 +69,7 @@ export default function Reports() {
               <Label>Description *</Label>
               <Textarea value={form.description} onChange={e=>setForm({...form, description:e.target.value})} required placeholder="Describe the issue in detail..." className="mt-1.5" />
             </div>
-            <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black">Submit report</Button>
+            <Button type="submit" className="rounded-xl">Submit report</Button>
           </form>
         </CardContent>
       </Card>

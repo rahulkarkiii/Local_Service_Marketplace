@@ -68,7 +68,7 @@ export default function ProviderServices() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">My Services</h1>
+        <h1 className="page-title">My Services</h1>
         <p className="text-muted-foreground mt-1">Create listings. Requires verified provider profile (IsVerifiedProvider). Price and duration validated server-side.</p>
       </div>
 
@@ -111,7 +111,7 @@ export default function ProviderServices() {
               <span className="text-sm font-medium">Active (visible to customers)</span>
             </div>
             <div className="sm:col-span-2 flex gap-2">
-              <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black">{editing ? "Update service" : "Create service"}</Button>
+              <Button type="submit" className="rounded-xl">{editing ? "Update service" : "Create service"}</Button>
               {editing && <Button type="button" variant="outline" className="rounded-xl" onClick={()=>{setEditing(null); setForm({ title:"", description:"", category:"", price:"", duration:"60", location:"", is_active:true })}}>Cancel</Button>}
             </div>
           </form>

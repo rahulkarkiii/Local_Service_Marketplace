@@ -26,7 +26,7 @@ export default function ProviderEarnings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Earnings</h1>
+        <h1 className="page-title">Earnings</h1>
         <p className="text-muted-foreground mt-1">Track your revenue from completed payments.</p>
       </div>
 
@@ -54,17 +54,17 @@ export default function ProviderEarnings() {
         <CardHeader><CardTitle>Recent payments ({payments.length})</CardTitle></CardHeader>
         <CardContent>
           {payments.length===0 ? <p className="text-sm text-muted-foreground">No payments yet.</p> :
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border bg-card">
               <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b"><tr><th className="text-left py-2">ID</th><th className="text-left py-2">Booking</th><th className="text-left py-2">Amount</th><th className="text-left py-2">Status</th><th className="text-left py-2">Date</th></tr></thead>
+                <thead className="table-header"><tr><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">ID</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Booking</th><th className="text-right py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Amount</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Status</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Date</th></tr></thead>
                 <tbody>
                   {payments.slice(0,10).map(p=> (
-                    <tr key={p.id} className="border-b last:border-0 hover:bg-zinc-50">
-                      <td className="py-3">#{p.id}</td>
-                      <td className="py-3">#{p.booking}</td>
-                      <td className="py-3 font-semibold">{formatPrice(p.amount)}</td>
-                      <td className="py-3">{p.status}</td>
-                      <td className="py-3 text-xs text-muted-foreground">{new Date(p.created_at).toLocaleString()}</td>
+                    <tr key={p.id} className="table-row">
+                      <td className="py-3.5 px-4">#{p.id}</td>
+                      <td className="py-3.5 px-4">#{p.booking}</td>
+                      <td className="py-3.5 px-4 text-right font-semibold tabular-nums">{formatPrice(p.amount)}</td>
+                      <td className="py-3.5 px-4">{p.status}</td>
+                      <td className="py-3.5 px-4 text-xs text-muted-foreground">{new Date(p.created_at).toLocaleString()}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -37,7 +37,7 @@ export default function Notifications() {
     <div className="mx-auto max-w-[720px] space-y-6">
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Notifications</h1>
+          <h1 className="page-title">Notifications</h1>
           <p className="text-muted-foreground mt-1">Auto-created on booking, payment, and review events.</p>
         </div>
         {notifs.some(n=>!n.is_read) && <Button variant="outline" className="rounded-xl" onClick={markAllRead}>Mark all read</Button>}

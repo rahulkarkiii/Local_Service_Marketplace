@@ -40,7 +40,7 @@ export default function AdminOverview() {
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Admin Dashboard</h1>
+        <h1 className="page-title">Admin Dashboard</h1>
         <p className="text-muted-foreground mt-1">Platform-wide stats, updated live. Historical snapshots at <Link to="/admin/analytics" className="text-violet-600 underline">/analytics</Link>.</p>
       </div>
 
@@ -63,10 +63,10 @@ export default function AdminOverview() {
           <CardContent>
             {data.top_providers_by_revenue?.length ? (
               <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b"><tr><th className="text-left py-2">Provider</th><th className="text-right py-2">Revenue</th></tr></thead>
+                <thead className="table-header"><tr><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Provider</th><th className="text-right py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Revenue</th></tr></thead>
                 <tbody>
                   {data.top_providers_by_revenue.map((r,i)=> (
-                    <tr key={i} className="border-b last:border-0">
+                    <tr key={i} className="table-row">
                       <td className="py-2 font-medium">#{i+1} {r.provider__username}</td>
                       <td className="py-2 text-right font-bold">{formatPrice(r.revenue)}</td>
                     </tr>

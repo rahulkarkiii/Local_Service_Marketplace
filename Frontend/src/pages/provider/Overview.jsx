@@ -35,7 +35,7 @@ export default function ProviderOverview() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight">Provider Hub</h1>
+          <h1 className="page-title">Provider Hub</h1>
           <p className="text-muted-foreground mt-1">Manage services, bookings, and earnings.</p>
         </div>
         {profile && (
@@ -101,10 +101,10 @@ export default function ProviderOverview() {
         <Card>
           <CardHeader><CardTitle>Quick actions</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
-            <Link to="/provider/services" className="rounded-2xl border p-4 hover:bg-zinc-50"><div className="h-9 w-9 rounded-xl bg-violet-100 grid place-items-center"><Briefcase className="h-5 w-5 text-violet-600"/></div><div className="text-sm font-semibold mt-2">Manage services</div><div className="text-xs text-muted-foreground">Create & edit listings</div></Link>
-            <Link to="/provider/availability" className="rounded-2xl border p-4 hover:bg-zinc-50"><div className="h-9 w-9 rounded-xl bg-emerald-100 grid place-items-center"><Clock className="h-5 w-5 text-emerald-600"/></div><div className="text-sm font-semibold mt-2">Set availability</div><div className="text-xs text-muted-foreground">Weekly time slots</div></Link>
-            <Link to="/provider/bookings" className="rounded-2xl border p-4 hover:bg-zinc-50"><div className="h-9 w-9 rounded-xl bg-sky-100 grid place-items-center"><Calendar className="h-5 w-5 text-sky-600"/></div><div className="text-sm font-semibold mt-2">Handle bookings</div><div className="text-xs text-muted-foreground">Accept / complete</div></Link>
-            <Link to="/provider/earnings" className="rounded-2xl border p-4 hover:bg-zinc-50"><div className="h-9 w-9 rounded-xl bg-amber-100 grid place-items-center"><CreditCard className="h-5 w-5 text-amber-600"/></div><div className="text-sm font-semibold mt-2">Earnings</div><div className="text-xs text-muted-foreground">Track revenue</div></Link>
+            <Link to="/provider/services" className="rounded-2xl border p-4 hover:bg-muted/40"><div className="h-9 w-9 rounded-xl bg-violet-100 grid place-items-center"><Briefcase className="h-5 w-5 text-violet-600"/></div><div className="text-sm font-semibold mt-2">Manage services</div><div className="text-xs text-muted-foreground">Create & edit listings</div></Link>
+            <Link to="/provider/availability" className="rounded-2xl border p-4 hover:bg-muted/40"><div className="h-9 w-9 rounded-xl bg-emerald-100 grid place-items-center"><Clock className="h-5 w-5 text-emerald-600"/></div><div className="text-sm font-semibold mt-2">Set availability</div><div className="text-xs text-muted-foreground">Weekly time slots</div></Link>
+            <Link to="/provider/bookings" className="rounded-2xl border p-4 hover:bg-muted/40"><div className="h-9 w-9 rounded-xl bg-sky-100 grid place-items-center"><Calendar className="h-5 w-5 text-sky-600"/></div><div className="text-sm font-semibold mt-2">Handle bookings</div><div className="text-xs text-muted-foreground">Accept / complete</div></Link>
+            <Link to="/provider/earnings" className="rounded-2xl border p-4 hover:bg-muted/40"><div className="h-9 w-9 rounded-xl bg-amber-100 grid place-items-center"><CreditCard className="h-5 w-5 text-amber-600"/></div><div className="text-sm font-semibold mt-2">Earnings</div><div className="text-xs text-muted-foreground">Track revenue</div></Link>
           </CardContent>
         </Card>
       </div>

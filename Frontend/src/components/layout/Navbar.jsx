@@ -54,13 +54,13 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <Link to="/services" className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+          <Link to="/services" className="hidden md:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-muted/40 dark:hover:bg-zinc-700 transition-colors">
             <Search className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
           </Link>
 
           {isAuthenticated() ? (
             <>
-              <Link to="/notifications" className="relative hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+              <Link to="/notifications" className="relative hidden sm:inline-flex h-9 w-9 items-center justify-center rounded-xl border bg-white dark:bg-zinc-800 dark:border-zinc-700 hover:bg-muted/40 dark:hover:bg-zinc-700 transition-colors">
                 <Bell className="h-4 w-4 text-zinc-600 dark:text-zinc-300" />
                 {notifCount > 0 && <span className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 rounded-full bg-red-500 text-white text-[11px] font-bold flex items-center justify-center">{notifCount>9? "9+": notifCount}</span>}
               </Link>
@@ -88,7 +88,7 @@ export default function Navbar() {
                 <Button variant="ghost" size="sm" className="rounded-xl">Log in</Button>
               </Link>
               <Link to="/register" className="hidden sm:inline-flex">
-                <Button size="sm" className="rounded-xl bg-zinc-900 hover:bg-black text-white gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Get Started</Button>
+                <Button size="sm" className="rounded-xl bg-zinc-900 hover:bg-black dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 text-white dark:border dark:border-zinc-200 gap-1.5"><Sparkles className="h-3.5 w-3.5" /> Get Started</Button>
               </Link>
             </>
           )}

@@ -43,7 +43,7 @@ export default function ProviderBookings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Bookings</h1>
+        <h1 className="page-title">Bookings</h1>
         <p className="text-muted-foreground mt-1">Accept or reject pending requests. Completed bookings can be reviewed and paid by customers.</p>
       </div>
 
@@ -54,18 +54,18 @@ export default function ProviderBookings() {
         <CardHeader><CardTitle>All bookings ({bookings.length})</CardTitle></CardHeader>
         <CardContent>
           {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : bookings.length===0 ? <p className="text-sm text-muted-foreground">No bookings yet.</p> :
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border bg-card">
               <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b"><tr><th className="text-left py-2">ID</th><th className="text-left py-2">Service</th><th className="text-left py-2">Customer</th><th className="text-left py-2">Date</th><th className="text-left py-2">Status</th><th className="text-left py-2">Actions</th></tr></thead>
+                <thead className="table-header"><tr><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">ID</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Service</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Customer</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Date</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Status</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Actions</th></tr></thead>
                 <tbody>
                   {bookings.map(b=> (
-                    <tr key={b.id} className="border-b last:border-0 hover:bg-zinc-50">
-                      <td className="py-3 font-medium">#{b.id}</td>
-                      <td className="py-3">#{b.service}</td>
-                      <td className="py-3">#{b.customer}</td>
-                      <td className="py-3">{b.booking_date} {b.booking_time||""}</td>
-                      <td className="py-3"><StatusBadge status={b.status}/></td>
-                      <td className="py-3 flex flex-wrap gap-1">
+                    <tr key={b.id} className="table-row">
+                      <td className="py-3.5 px-4 font-medium">#{b.id}</td>
+                      <td className="py-3.5 px-4">#{b.service}</td>
+                      <td className="py-3.5 px-4">#{b.customer}</td>
+                      <td className="py-3.5 px-4">{b.booking_date} {b.booking_time||""}</td>
+                      <td className="py-3.5 px-4"><StatusBadge status={b.status}/></td>
+                      <td className="py-3.5 px-4 flex flex-wrap gap-1">
                         {b.status==="PENDING" && (
                           <>
                             <Button size="sm" className="h-7 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-xs" onClick={()=>updateStatus(b.id,"ACCEPTED")}>Accept</Button>

@@ -55,7 +55,7 @@ export default function CustomerBookings() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">My Bookings</h1>
+        <h1 className="page-title">My Bookings</h1>
         <p className="text-muted-foreground mt-1">Track and manage your service bookings. Only pending bookings can be cancelled.</p>
       </div>
 
@@ -83,7 +83,7 @@ export default function CustomerBookings() {
               <Input name="notes" placeholder="Address, details..." className="mt-1.5" />
             </div>
             <div className="sm:col-span-2">
-              <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black">Create booking</Button>
+              <Button type="submit" className="rounded-xl">Create booking</Button>
             </div>
           </form>
         </CardContent>
@@ -93,20 +93,20 @@ export default function CustomerBookings() {
         <CardHeader><CardTitle>All bookings ({bookings.length})</CardTitle></CardHeader>
         <CardContent>
           {loading ? <p className="text-sm text-muted-foreground">Loading...</p> : bookings.length===0 ? <p className="text-sm text-muted-foreground">No bookings yet.</p> :
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto rounded-xl border bg-card">
               <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b">
-                  <tr><th className="text-left py-2 font-medium">ID</th><th className="text-left py-2 font-medium">Service</th><th className="text-left py-2 font-medium">Date</th><th className="text-left py-2 font-medium">Time</th><th className="text-left py-2 font-medium">Status</th><th className="text-left py-2 font-medium">Actions</th></tr>
+                <thead className="table-header">
+                  <tr><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">ID</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Service</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Date</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Time</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Status</th><th className="text-left py-3 px-4 text-[11px] font-bold tracking-widest uppercase text-muted-foreground">Actions</th></tr>
                 </thead>
                 <tbody>
                   {bookings.map(b=> (
-                    <tr key={b.id} className="border-b last:border-0 hover:bg-zinc-50">
-                      <td className="py-3 font-medium">#{b.id}</td>
-                      <td className="py-3">#{b.service}</td>
-                      <td className="py-3">{b.booking_date}</td>
-                      <td className="py-3">{b.booking_time || "—"}</td>
-                      <td className="py-3"><StatusBadge status={b.status}/></td>
-                      <td className="py-3">
+                    <tr key={b.id} className="table-row">
+                      <td className="py-3.5 px-4 font-medium">#{b.id}</td>
+                      <td className="py-3.5 px-4">#{b.service}</td>
+                      <td className="py-3.5 px-4">{b.booking_date}</td>
+                      <td className="py-3.5 px-4">{b.booking_time || "—"}</td>
+                      <td className="py-3.5 px-4"><StatusBadge status={b.status}/></td>
+                      <td className="py-3.5 px-4">
                         {b.status==="PENDING" ? <Button size="sm" variant="outline" className="rounded-xl h-7 text-xs" onClick={()=>cancel(b.id)}>Cancel</Button> : <span className="text-xs text-muted-foreground">—</span>}
                       </td>
                     </tr>

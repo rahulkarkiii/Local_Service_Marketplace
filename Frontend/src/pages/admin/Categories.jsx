@@ -55,7 +55,7 @@ export default function AdminCategories() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-extrabold tracking-tight">Service Categories</h1>
+        <h1 className="page-title">Service Categories</h1>
         <p className="text-muted-foreground mt-1">Admin-only CRUD. Parent field enables subcategories (e.g. Plumbing → Pipe Repair).</p>
       </div>
 
@@ -84,7 +84,7 @@ export default function AdminCategories() {
               <p className="text-xs text-muted-foreground mt-1">Link to parent category for subcategories.</p>
             </div>
             <div className="flex items-end gap-2">
-              <Button type="submit" className="rounded-xl bg-zinc-900 hover:bg-black flex-1">{editing?"Update":"Create"}</Button>
+              <Button type="submit" className="rounded-xl flex-1">{editing?"Update":"Create"}</Button>
               {editing && <Button type="button" variant="outline" className="rounded-xl" onClick={()=>{setEditing(null); setForm({name:"",slug:"",description:"",parent:""})}}>Cancel</Button>}
             </div>
           </form>
