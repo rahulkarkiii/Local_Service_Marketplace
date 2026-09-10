@@ -10,16 +10,29 @@ from accounts.permissions import IsProvider
 from rest_framework import status
 
 from .models import Payment
-from drf_spectacular.utils import extend_schema
+from django.db import transaction
 from .serializers import PaymentSerializer
 from notifications.services import create_notification
 from .gateway import initiate_gateway_payment, verify_gateway_payment, KhaltiError
 
 
 class PaymentListCreateView(generics.ListCreateAPIView):
-    queryset = Payment.objects.all()
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.role == "ADMIN":
+            return Payment.objects.all()
+
+        if user.role == "CUSTOMER":
+            return Payment.objects.filter(customer=user)
+
+        if user.role == "PROVIDER":
+            return Payment.objects.filter(provider=user)
+
+        return Payment.objects.none()
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -136,48 +149,49 @@ class PaymentInitiateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, pk):
-        try:
-            payment = Payment.objects.get(pk=pk)
-        except Payment.DoesNotExist:
+        with transaction.atomic():
+            try:
+                payment = Payment.objects.select_for_update().get(pk=pk)
+            except Payment.DoesNotExist:
+                return Response(
+                    {"detail": "Payment not found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            if payment.customer != request.user:
+                raise PermissionDenied(
+                    "You can only initiate your own payments."
+                )
+
+            if payment.status != Payment.Status.PENDING:
+                raise ValidationError(
+                    "Only pending payments can be initiated."
+                )
+
+            if payment.payment_method != Payment.PaymentMethod.ONLINE:
+                raise ValidationError(
+                    "Only online payments go through the gateway."
+                )
+
+            try:
+                gateway_result = initiate_gateway_payment(payment)
+            except KhaltiError as exc:
+                return Response(
+                    {"detail": "Could not start payment with Khalti.", "error": str(exc)},
+                    status=status.HTTP_502_BAD_GATEWAY,
+                )
+
+            payment.transaction_id = gateway_result["transaction_id"]
+            payment.save(update_fields=["transaction_id"])
+
             return Response(
-                {"detail": "Payment not found."},
-                status=status.HTTP_404_NOT_FOUND,
+                {
+                    "payment_id": payment.id,
+                    "transaction_id": gateway_result["transaction_id"],
+                    "payment_url": gateway_result["payment_url"],
+                },
+                status=status.HTTP_200_OK,
             )
-
-        if payment.customer != request.user:
-            raise PermissionDenied(
-                "You can only initiate your own payments."
-            )
-
-        if payment.status != Payment.Status.PENDING:
-            raise ValidationError(
-                "Only pending payments can be initiated."
-            )
-
-        if payment.payment_method != Payment.PaymentMethod.ONLINE:
-            raise ValidationError(
-                "Only online payments go through the gateway."
-            )
-
-        try:
-            gateway_result = initiate_gateway_payment(payment)
-        except KhaltiError as exc:
-            return Response(
-                {"detail": "Could not start payment with Khalti.", "error": str(exc)},
-                status=status.HTTP_502_BAD_GATEWAY,
-            )
-
-        payment.transaction_id = gateway_result["transaction_id"]
-        payment.save(update_fields=["transaction_id"])
-
-        return Response(
-            {
-                "payment_id": payment.id,
-                "transaction_id": gateway_result["transaction_id"],
-                "payment_url": gateway_result["payment_url"],
-            },
-            status=status.HTTP_200_OK,
-        )
 
 class PaymentVerifyView(APIView):
     permission_classes = [IsAuthenticated]
@@ -185,76 +199,77 @@ class PaymentVerifyView(APIView):
     KHALTI_FAILURE_STATUSES = {"Expired", "User canceled", "Refunded", "Partial Refund"}
 
     def post(self, request, pk):
-        try:
-            payment = Payment.objects.get(pk=pk)
-        except Payment.DoesNotExist:
+        with transaction.atomic():
+            try:
+                payment = Payment.objects.select_for_update().get(pk=pk)
+            except Payment.DoesNotExist:
+                return Response(
+                    {"detail": "Payment not found."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+
+            if payment.customer != request.user and request.user.role != "ADMIN":
+                raise PermissionDenied(
+                    "You can only verify your own payments."
+                )
+
+            if payment.status != Payment.Status.PENDING:
+                raise ValidationError(
+                    "Only pending payments can be verified."
+                )
+
+            if not payment.transaction_id:
+                raise ValidationError(
+                    "Payment has not been initiated with the gateway yet."
+                )
+
+            try:
+                khalti_status = verify_gateway_payment(payment.transaction_id)
+            except KhaltiError as exc:
+                return Response(
+                    {"detail": "Could not verify payment with Khalti.", "error": str(exc)},
+                    status=status.HTTP_502_BAD_GATEWAY,
+                )
+
+            if khalti_status in self.KHALTI_SUCCESS_STATUSES:
+                payment.status = Payment.Status.COMPLETED
+                payment.save(update_fields=["status"])
+
+                create_notification(
+                    recipient=payment.provider,
+                    notification_type="PAYMENT",
+                    title="Payment received",
+                    message=(
+                        f"You received a payment of {payment.amount} "
+                        f"for {payment.booking.service.title}."
+                    ),
+                )
+
+                create_notification(
+                    recipient=payment.customer,
+                    notification_type="PAYMENT",
+                    title="Payment successful",
+                    message=(
+                        f"Your payment of {payment.amount} for "
+                        f"{payment.booking.service.title} was successful."
+                    ),
+                )
+
+            elif khalti_status in self.KHALTI_FAILURE_STATUSES:
+                payment.status = Payment.Status.FAILED
+                payment.save(update_fields=["status"])
+
+                create_notification(
+                    recipient=payment.customer,
+                    notification_type="PAYMENT",
+                    title="Payment failed",
+                    message=(
+                        f"Your payment of {payment.amount} for "
+                        f"{payment.booking.service.title} failed. Please try again."
+                    ),
+                )
+
             return Response(
-                {"detail": "Payment not found."},
-                status=status.HTTP_404_NOT_FOUND,
+                PaymentSerializer(payment).data,
+                status=status.HTTP_200_OK,
             )
-
-        if payment.customer != request.user and request.user.role != "ADMIN":
-            raise PermissionDenied(
-                "You can only verify your own payments."
-            )
-
-        if payment.status != Payment.Status.PENDING:
-            raise ValidationError(
-                "Only pending payments can be verified."
-            )
-
-        if not payment.transaction_id:
-            raise ValidationError(
-                "Payment has not been initiated with the gateway yet."
-            )
-
-        try:
-            khalti_status = verify_gateway_payment(payment.transaction_id)
-        except KhaltiError as exc:
-            return Response(
-                {"detail": "Could not verify payment with Khalti.", "error": str(exc)},
-                status=status.HTTP_502_BAD_GATEWAY,
-            )
-
-        if khalti_status in self.KHALTI_SUCCESS_STATUSES:
-            payment.status = Payment.Status.COMPLETED
-            payment.save(update_fields=["status"])
-
-            create_notification(
-                recipient=payment.provider,
-                notification_type="PAYMENT",
-                title="Payment received",
-                message=(
-                    f"You received a payment of {payment.amount} "
-                    f"for {payment.booking.service.title}."
-                ),
-            )
-
-            create_notification(
-                recipient=payment.customer,
-                notification_type="PAYMENT",
-                title="Payment successful",
-                message=(
-                    f"Your payment of {payment.amount} for "
-                    f"{payment.booking.service.title} was successful."
-                ),
-            )
-
-        elif khalti_status in self.KHALTI_FAILURE_STATUSES:
-            payment.status = Payment.Status.FAILED
-            payment.save(update_fields=["status"])
-
-            create_notification(
-                recipient=payment.customer,
-                notification_type="PAYMENT",
-                title="Payment failed",
-                message=(
-                    f"Your payment of {payment.amount} for "
-                    f"{payment.booking.service.title} failed. Please try again."
-                ),
-            )
-
-        return Response(
-            PaymentSerializer(payment).data,
-            status=status.HTTP_200_OK,
-        )
