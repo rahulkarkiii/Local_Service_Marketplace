@@ -79,12 +79,14 @@ export default function AdminOverview() {
         <Card className="p-6 bg-zinc-900 text-white border-0">
           <h3 className="font-bold">Quick admin actions</h3>
           <div className="mt-4 grid grid-cols-2 gap-3">
-            <Link to="/admin/providers" className="rounded-xl bg-white text-zinc-900 p-3 text-sm font-semibold hover:bg-zinc-100">Verify providers</Link>
+            <Link to="/admin/accounts" className="rounded-xl bg-white text-zinc-900 p-3 text-sm font-semibold hover:bg-zinc-100">Manage accounts</Link>
+            <Link to="/admin/providers" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">Verify providers</Link>
+            <Link to="/admin/bookings" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">View bookings</Link>
+            <Link to="/admin/payments" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">View payments</Link>
             <Link to="/admin/categories" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">Manage categories</Link>
             <Link to="/admin/reports" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">Handle reports</Link>
-            <Link to="/admin/analytics" className="rounded-xl bg-white/10 border border-white/20 p-3 text-sm font-semibold hover:bg-white/20">View snapshots</Link>
           </div>
-          <p className="text-xs text-zinc-400 mt-4">Swagger docs available at <code className="bg-white/10 px-1 rounded">/api/docs/</code> on backend.</p>
+          <p className="text-xs text-zinc-400 mt-4">Swagger docs at <code className="bg-white/10 px-1 rounded">/api/docs/</code> • Snapshots at <Link to="/admin/analytics" className="underline text-zinc-300">/analytics</Link></p>
         </Card>
       </div>
     </div>
